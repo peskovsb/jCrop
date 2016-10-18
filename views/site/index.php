@@ -9,6 +9,7 @@ use app\helpers\ImgHelper;
 
 use yii\widgets\ActiveForm;
 use yii\helpers\Html;
+use yii\widgets\Pjax;
 
 
 
@@ -19,14 +20,20 @@ use yii\helpers\Html;
 <script type="text/javascript" src="/web/ajaxtest/scripts/jquery.imgareaselect.js"></script>
 
 <div class="site-index">
-
+<?php yii\widgets\Pjax::begin() ?>
     <?php
-    $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]);
-    echo $form->field($model, 'imageFiles[]')->fileInput(['multiple' => true, 'accept' => 'image/*']);
-    echo Html::submitButton('Сохранить', ['class' => 'btn btn-primary']);
+    if($model->imageFiles){
+        foreach($model->imageFiles as $value){
+            echo '<img width="150" src="/web/img/cropped/half_'.$value->name.'">';
+        }
+    }
+
+    $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data','data-pjax' => true]]);
+    echo $form->field($model, 'imageFiles[]')->fileInput(['multiple' => true, 'accept' => 'image/*', 'onchange'=>'this.form.submit();']);
+    echo Html::submitButton('Сохранить', ['class' => 'btn btn-primary','style'=>'display:none;']);
     ActiveForm::end();
     ?>
-
+<?php Pjax::end(); ?>
     <a id="Link1">Ajax1</a>
     <a id="Link2">Ajax2</a>
     <br />

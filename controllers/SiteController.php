@@ -51,37 +51,43 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        $im = new ResizeImg(\Yii::getAlias("@app/web").'/img/chalenger.jpg');
+        $nameImg = 'butterf.png';
+
         $model = new \app\models\UploadForm();
         if (Yii::$app->request->isPost) {
             $model->imageFiles = \yii\web\UploadedFile::getInstances($model, 'imageFiles');
-echo '<pre>';print_r($model->imageFiles); echo '</pre>';
+//echo '<pre>';print_r($model->imageFiles); echo '</pre>';
             foreach($model->imageFiles as $value){
-                echo $value->extension.'<br />';
+                //echo $value->name.'<br />';
+                //echo $value->extension.'<br />';
+
+                $im = new ResizeImg(\Yii::getAlias("@app/web").'/img/'.$value->name);
+
+                $centreX = round($im->getWidth() / 2);
+                $centreY = round($im->getHeight() / 2);
+
+                $getSquare = round($im->getHeight() / 2);
+
+                $x1 = $centreX - $centreY;
+                $y1 = $centreY - $centreY;
+
+                $x2 = $centreX + $centreY;
+                $y2 = $centreY + $centreY;
+
+                /*$x1 = $getSquare - $getSquare;
+                $x2 = $getSquare - $getSquare;
+                $y1 = $getSquare - $getSquare;
+                $y2 = $getSquare - $getSquare;*/
+
+                $im->crop($x1, $y1, $x2, $y2);
+                $im->save(\Yii::getAlias("@app/web").'/img/cropped/half_'.$value->name);
             }
 
             /*if ($model->upload()) {
                 return;
             }*/
         }
-        $centreX = round($im->getWidth() / 2);
-        $centreY = round($im->getHeight() / 2);
 
-        $getSquare = round($im->getHeight() / 2);
-
-        $x1 = $centreX - $centreY;
-        $y1 = $centreY - $centreY;
-
-        $x2 = $centreX + $centreY;
-        $y2 = $centreY + $centreY;
-
-        /*$x1 = $getSquare - $getSquare;
-        $x2 = $getSquare - $getSquare;
-        $y1 = $getSquare - $getSquare;
-        $y2 = $getSquare - $getSquare;*/
-
-        $im->crop($x1, $y1, $x2, $y2);
-        $im->save(\Yii::getAlias("@app/web").'/img/cropped/somefile'.rand(10,1000).'.jpg');
 
         print_r(Yii::$app->user->identity);
         return $this->render('index',[
