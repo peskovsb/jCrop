@@ -51,8 +51,7 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-
-        $im = new ResizeImg($_SERVER['DOCUMENT_ROOT'].'/web/img/chalenger.jpg');
+        $im = new ResizeImg(\Yii::getAlias("@app/web").'/img/chalenger.jpg');
         $model = new \app\models\UploadForm();
         if (Yii::$app->request->isPost) {
             $model->imageFiles = \yii\web\UploadedFile::getInstances($model, 'imageFiles');
@@ -82,7 +81,7 @@ echo '<pre>';print_r($model->imageFiles); echo '</pre>';
         $y2 = $getSquare - $getSquare;*/
 
         $im->crop($x1, $y1, $x2, $y2);
-        $im->save($_SERVER['DOCUMENT_ROOT'].'/web/img/cropped/somefile'.rand(10,1000).'.jpg');
+        $im->save(\Yii::getAlias("@app/web").'/img/cropped/somefile'.rand(10,1000).'.jpg');
 
         print_r(Yii::$app->user->identity);
         return $this->render('index',[
